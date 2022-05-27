@@ -1,0 +1,8 @@
+{
+  "name": "taskManager",
+  "version": "1.0.0",
+  "description": "The task managment server is just a microserver that passes the tasks on to the browser extension through a graphql Subscription. I this case crontab is used to automated the requests sent to the server. This method allows for scalable changes to be made in the future.",
+  "main": "main.js",
+  "license": "MIT",
+  "private": false
+}
