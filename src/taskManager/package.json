@@ -4,5 +4,20 @@
   "description": "The task managment server is just a microserver that passes the tasks on to the browser extension through a graphql Subscription. I this case crontab is used to automated the requests sent to the server. This method allows for scalable changes to be made in the future.",
   "main": "main.js",
   "license": "MIT",
-  "private": false
+  "private": false,
+  "scripts": {
+    "test": "run_tests",
+    "start": "nodemon ./main.js"
+  },
+  "dependencies": {
+    "apollo-server-express": "2.23.0",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "graphql": "^16.5.0",
+    "graphql-subscriptions": "^2.0.0",
+    "http": "^0.0.1-security",
+    "merge-graphql-schemas": "^1.7.8",
+    "nodemon": "^2.0.16"
+  }
 }
