@@ -3,16 +3,16 @@
 */
 
 // functions
-const sendTask = require("./taskFunctions/sendTask");
+const startTask = require("./taskFunctions/startTask");
 const { pubsub } = require("../../common");
 
 module.exports = {
   Subscription: {
     sendTask: {
-      subscribe: () => PubSub.asyncIterator(["SEND_TASK"]),
+      subscribe: () => pubsub.asyncIterator(["SEND_TASK"]),
     },
   },
   Query: {
-    sendTask,
+    startTask,
   },
 };

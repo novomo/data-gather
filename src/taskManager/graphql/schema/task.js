@@ -1,4 +1,4 @@
-const task = `
+const Task = `
     type Task {
         task: String!
     }
@@ -12,4 +12,4 @@ const task = `
     }
 `;
 
-module.exports = task;
+module.exports = Task;
