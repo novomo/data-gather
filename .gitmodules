@@ -1,0 +1,6 @@
+[submodule "src/extension/encryption"]
+	path = src/extension/encryption
+	url = https://github.com/novomo/encryption.git
+[submodule "src/webApp/scraper/src/encryption"]
+	path = src/webApp/scraper/src/encryption
+	url = https://github.com/novomo/encryption.git
