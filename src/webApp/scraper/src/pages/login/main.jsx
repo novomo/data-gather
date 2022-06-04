@@ -16,7 +16,7 @@ import Logo from "../../assets/images/logo.png";
 // user defined modules
 import { setAccessToken } from "../../assets/globalVaribles";
 import { encrypt } from "../../encryption/src/index";
-import { mainColour } from "../common/common_styles";
+import { mainColour } from "../common/styles";
 
 // queries
 import { LOGIN } from "./queries";
@@ -64,6 +64,7 @@ function Login(props) {
           }}
           placeholder="Username"
           inputType="text"
+          id="username"
           setStateValue={setEmail}
           stateValue={email}
         ></LoginInput>
@@ -76,6 +77,7 @@ function Login(props) {
           }}
           placeholder="Password"
           inputType="password"
+          id="password"
           setStateValue={setPassword}
           stateValue={password}
         ></LoginInput>
@@ -87,6 +89,7 @@ function Login(props) {
             margin: "auto",
             marginTop: "30px",
           }}
+          id="loginBtn"
           onClick={submitLogin}
         ></LoginButton>
       </Group>

@@ -3,7 +3,7 @@
 */
 // node modules
 import React, { useEffect, useState } from "react";
-import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
+import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import { SemipolarLoading } from "react-loadingg";
 import styled from "styled-components";
 
@@ -27,6 +27,32 @@ const Container = styled.div`
   margin: 0;
   backgground-color: ${mainColour};
 `;
+
+// if user not logged in
+const LoginContainer = () => (
+  <Container>
+    <Route exact path="/" render={() => <Redirect to="/login" />} />
+
+    <Route path="/login" component={Login} />
+    <Footer />
+  </Container>
+);
+
+// if user is logged
+const DefaultContainer = () => {
+  const accessToken = getAccessToken();
+  if (!accessToken || accessToken === "no token") {
+    return <Redirect to="/login" />;
+  }
+  return (
+    <div>
+      <Container>
+        <Route path="/dashboard" component={Dashboard} />
+        <Footer />
+      </Container>
+    </div>
+  );
+};
 
 const App = () => {
   const [loading, setLoading] = useState(true);
@@ -61,41 +87,10 @@ const App = () => {
       <BrowserRouter>
         <Switch>
           <Redirect from="/" to="/dashboard" exact />
-          <Route exact path="/login" component={LoginContainer} />:
+          <Route path="/login" component={LoginContainer} />:
           <Route component={DefaultContainer} />
         </Switch>
       </BrowserRouter>
-    </div>
-  );
-};
-
-// if user not logged in
-const LoginContainer = () => {
-  const accessToken = getAccessToken();
-  if (accessToken || accessToken !== "no token") {
-    return <Redirect to="/dashboard" />;
-  }
-  return (
-    <Container>
-      <Route exact path="/" render={() => <Redirect to="/login" />} />
-      <Route path="/login" component={Login} />
-      <Footer />
-    </Container>
-  );
-};
-
-// if user is logged
-const DefaultContainer = () => {
-  const accessToken = getAccessToken();
-  if (!accessToken || accessToken === "no token") {
-    return <Redirect to="/login" />;
-  }
-  return (
-    <div>
-      <Container>
-        <Route path="/dashboard" component={Dashboard} />
-        <Footer />
-      </Container>
     </div>
   );
 };

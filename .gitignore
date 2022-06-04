@@ -1343,3 +1343,6 @@ secrets.*
 parsingFunctions/*
 
 crons.*
+
+# Local Netlify folder
+.netlify

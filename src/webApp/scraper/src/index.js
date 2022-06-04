@@ -10,6 +10,7 @@ import { ApolloClient } from "apollo-client";
 import { TokenRefreshLink } from "apollo-link-token-refresh";
 import { ApolloProvider } from "@apollo/react-hooks";
 import { InMemoryCache } from "apollo-cache-inmemory";
+import { getAccessToken, setAccessToken } from "./assets/globalVaribles";
 import { HttpLink } from "apollo-link-http";
 import { onError } from "apollo-link-error";
 import { ApolloLink, Observable } from "apollo-link";
@@ -23,12 +24,10 @@ import "./index.css";
 
 // user defined files
 import App from "./App";
-import { REFRESH_TOKEN_URL, WEB_SOCKET_URL, GRAPHQL_HTTPS } from "./secrets";
-import { getAccessToken, setAccessToken } from "./assets/globalVaribles";
 
 const cache = new InMemoryCache({});
 const wsLink = new WebSocketLink({
-  uri: WEB_SOCKET_URL,
+  uri: `wss://api.iquation-corp.com/graphql`,
   options: {
     reconnect: true,
     connectionParams: {
@@ -102,7 +101,7 @@ const client = new ApolloClient({
         }
       },
       fetchAccessToken: () => {
-        return fetch(REFRESH_TOKEN_URL, {
+        return fetch("https://api.iquation-corp.com/refresh_token", {
           method: "POST",
           credentials: "include",
         });
@@ -121,7 +120,7 @@ const client = new ApolloClient({
     }),
     splitLink,
     new HttpLink({
-      uri: GRAPHQL_HTTPS,
+      uri: "https://api.iquation-corp.com/graphql",
       credentials: "include",
     }),
   ]),
