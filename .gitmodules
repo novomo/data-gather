@@ -4,3 +4,6 @@
 [submodule "src/webApp/scraper/src/encryption"]
 	path = src/webApp/scraper/src/encryption
 	url = https://github.com/novomo/encryption.git
+[submodule "src/master-bot"]
+	path = src/master-bot
+	url = https://github.com/novomo/master-bot.git
