@@ -3,6 +3,9 @@ import { useSubscription } from "@apollo/client";
 import Cookies from "universal-cookie";
 import { TASK_SUBSCRIPTION, UPDATE_TASKS_SUBSCRIPTION } from "./queries";
 
+// user defined modules
+import { trim } from "../common/styles";
+
 const findByValueOfObject = (key, value, obj) => {
   return obj.filter(function (item) {
     return item[key] === value;
@@ -10,91 +13,62 @@ const findByValueOfObject = (key, value, obj) => {
 };
 
 const Dashboard = () => {
-  const [tasks, setTasks] = useState([]);
-
+  const [cookiesState, setCookiesState] = useState({ proxy: false });
   useEffect(() => {
     const cookies = new Cookies();
-    const currentTasksState = cookies.get("scraperTasks");
-    console.log(currentTasksState);
-    if (currentTasksState) {
-      setTasks(currentTasksState);
+    const currentSettingsState = cookies.get("scraperSettings");
+    //console.log(currentSettingsState[0]);
+    if (currentSettingsState) {
+      setCookiesState(currentSettingsState[0]);
+    } else {
+      cookies.set(
+        "scraperSettings",
+        {
+          proxy: false,
+        },
+        { path: "/" }
+      );
     }
   }, []);
-  const {
-    data: startData,
-    loading: startLoading,
-    error: startError,
-  } = useSubscription(TASK_SUBSCRIPTION, {
-    onSubscriptionData: ({ client, subscriptionData }) => {
-      //console.log(subscriptionData);
-      const data = subscriptionData.data;
-      if (data && data.sendTask) {
-        console.log(data);
-        const there = findByValueOfObject("task", data.sendTask.task, tasks);
-        console.log(there);
-        const cookies = new Cookies();
-        if (there.length === 0) {
-          const currentTasksState = cookies.get("scraperTasks");
-          console.log(currentTasksState);
-          if (!currentTasksState) {
-            cookies.set(
-              "scraperTasks",
-              [
-                {
-                  ...data.sendTask,
-                },
-              ],
-              { path: "/" }
-            );
-          } else {
-            cookies.set(
-              "scraperTasks",
-              [
-                ...currentTasksState,
-                {
-                  ...data.sendTask,
-                },
-              ],
-              { path: "/" }
-            );
-          }
 
-          setTasks([...tasks, data.sendTask.task]);
-        }
-      }
-    },
-  });
-
-  const {
-    data: endData,
-    loading: endLoading,
-    error: endError,
-  } = useSubscription(UPDATE_TASKS_SUBSCRIPTION, {
-    onSubscriptionData: ({ client, subscriptionData }) => {
-      //console.log(subscriptionData);
-      const data = subscriptionData.data;
-      const cookies = new Cookies();
-      if (data && data.updateTasks) {
-        setTasks(data.updateTasks);
-        cookies.set("scraperTasks", data.updateTasks, {
-          path: "/",
-        });
-      }
-    },
-  });
-
-  console.log(tasks);
+  const proxyChange = async () => {
+    setCookiesState({ proxy: !cookiesState.proxy });
+    const cookies = new Cookies();
+    const currentCookieState = cookies.get("scraperSettings");
+    if (currentCookieState) {
+      cookies.set(
+        "scraperSettings",
+        [
+          {
+            ...currentCookieState,
+            proxy: !cookiesState.proxy,
+          },
+        ],
+        { path: "/" }
+      );
+    } else {
+      cookies.set(
+        "scraperSettings",
+        [
+          {
+            proxy: !cookiesState.proxy,
+          },
+        ],
+        { path: "/" }
+      );
+    }
+  };
   return (
     <div id="tasks">
-      {tasks.map((task) => {
-        return (
-          <div>
-            <p className="task" id={task.task.replaceAll(" ", "_")}>
-              {task.task}
-            </p>
-          </div>
-        );
-      })}
+      <label style={{ color: trim }}>
+        <input
+          type="checkbox"
+          id="proxy"
+          onChange={proxyChange}
+          checked={cookiesState.proxy}
+        />
+        Proxy
+      </label>
     </div>
   );
 };

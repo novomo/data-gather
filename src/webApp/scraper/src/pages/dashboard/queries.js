@@ -10,6 +10,9 @@ export const TASK_SUBSCRIPTION = gql`
       stage
       tabId
       gotCurrent
+      settings {
+        proxy
+      }
     }
   }
 `;
@@ -24,6 +27,9 @@ export const UPDATE_TASKS_SUBSCRIPTION = gql`
       stage
       tabId
       gotCurrent
+      settings {
+        proxy
+      }
     }
   }
 `;

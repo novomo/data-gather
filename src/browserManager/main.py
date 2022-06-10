@@ -15,7 +15,6 @@ import fileinput
 
 # Custom libraries
 from helpers import importModuleByPath
-from globals import PLATFORMS, HOOK_URL
 from subprocess import Popen, PIPE
 from secrets import TOR_PASS, SCRAPER_APP_USERNAME, SCRAPER_APP_PASS
 
@@ -29,6 +28,8 @@ class Scraper(masterBot.Bot):
        imagePath: str=f"{DIRECTORY}/images", virtualDisplay: bool=False, showVirtualDisplay: int=1, proxy: str="", torPass: str=""):
         super().__init__(requestBot, visualBot, 
        imagePath, virtualDisplay, showVirtualDisplay, proxy, torPass)
+        if proxy != "":
+            self.addSettings()
     
     def __quit__(self):
         self.removeCredsToContentJS(passwrd=SCRAPER_APP_PASS, username=SCRAPER_APP_USERNAME)
@@ -42,22 +43,46 @@ class Scraper(masterBot.Bot):
             self.browserPid[key].kill()
     
     def inputCredsToContentJS(self, passwrd, username):
-        with fileinput.FileInput(f"{PARENT_DIRECTORY}/extension/context.js", inplace=True, backup='.bak') as file:
-            for line in file:
-                print(line.replace('SCRAPER_APP_USERNAME = "USERNAME";', f'SCRAPER_APP_USERNAME = "{username}";'), end='')
-                print(line.replace('SCRAPER_APP_USERNAME = "PASSWORD";', f'SCRAPER_APP_PASS = "{passwrd}";'), end='')
+        contentFile = open(f"{PARENT_DIRECTORY}/extension/content.js", "r")
+        listOfLines = contentFile.readlines()
+        for index, line in enumerate(listOfLines):
+            print(line)
+            if 'SCRAPER_APP_USERNAME = "USERNAME";' in line:
+                listOfLines[index] = f'SCRAPER_APP_USERNAME = "{username}";\n'
+            if 'SCRAPER_APP_PASS = "PASSWORD";' in line:
+                listOfLines[index] = f'SCRAPER_APP_PASS = "{passwrd}";\n'
+        contentFile.close()
+        with open(f"{DIRECTORY}/content.js", "wt") as newContentFile:
+            for line in listOfLines:
+                newContentFile.write(line)
     
     def removeCredsToContentJS(self, passwrd, username):
-        with fileinput.FileInput(f"{PARENT_DIRECTORY}/extension/context.js", inplace=True, backup='.bak') as file:
-            for line in file:
-                print(line.replace(f'SCRAPER_APP_USERNAME = "{username}";', 'SCRAPER_APP_USERNAME = "USERNAME";'), end='')
-                print(line.replace(f'SCRAPER_APP_PASS = "{passwrd}";', 'SCRAPER_APP_USERNAME = "PASSWORD";'), end='')
+        contentFile = open(f"{PARENT_DIRECTORY}/extension/content.js", "r")
+        listOfLines = contentFile.readlines()
+        for index, line in enumerate(listOfLines):
+            print(line)
+            if f'SCRAPER_APP_USERNAME = "{username}";' in line:
+                listOfLines[index] = 'SCRAPER_APP_USERNAME = "USERNAME";\n'
+            if f'SCRAPER_APP_PASS = "{passwrd}";' in line:
+                listOfLines[index] = 'SCRAPER_APP_USERNAME = "PASSWORD";\n'
+        contentFile.close()
+        with open(f"{DIRECTORY}/content.js", "wt") as newContentFile:
+            for line in listOfLines:
+                newContentFile.write(line)
+    
+    def addSettings(self, proxy):
+        contentFile = open(f"{PARENT_DIRECTORY}/extension/content.js", "r")
+        listOfLines = contentFile.readlines()
+        if proxy:
+            listOfLines[0] = f"const proxy = true\n"
+        elif proxy is False:
+            listOfLines[0] = f"const proxy = false\n"
+        contentFile.close()
+        with open(f"{PARENT_DIRECTORY}/extension/content.js", "wt") as newContentFile:
+            for line in listOfLines:
+                newContentFile.write(line)
         
         
-        
-
-
-
 def main():
     try:
         virtualDisplay=True 
@@ -75,10 +100,13 @@ def main():
             
         scraper = Scraper(requestBot=True, visualBot=True, imagePath=f'{DIRECTORY}/images', virtualDisplay=virtualDisplay, showVirtualDisplay=showVirtualDisplay, proxy=proxy, torPass=torPass)
         scraper.inputCredsToContentJS(passwrd=SCRAPER_APP_PASS, username=SCRAPER_APP_USERNAME)
-        scraper.startBrowser(extensions=f"{PARENT_DIRECTORY}/extension", openWebsite="https://scraper-app.netlify.app/")
+        scraper.startBrowser("scraper", extensions=f"{PARENT_DIRECTORY}/extension", openWebsite="https://scraper-web-app-f97e9.web.app/")
         scraper.removeCredsToContentJS(passwrd=SCRAPER_APP_PASS, username=SCRAPER_APP_USERNAME)
     finally:
-        scraper.__quit__()
+        try:
+            scraper.__quit__()
+        except UnboundLocalError:
+            pass
 
 
 if __name__ in "__main__":

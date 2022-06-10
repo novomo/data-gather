@@ -7,8 +7,8 @@ import styled from "styled-components";
 import { useMutation } from "@apollo/client";
 
 // login components
-import LoginInput from "./components/input";
-import LoginButton from "./components/loginButton";
+import LoginInput from "../common/input";
+import LoginButton from "../common/loginButton";
 
 // images
 import Logo from "../../assets/images/logo.png";

@@ -6,7 +6,7 @@ import React from "react";
 import styled from "styled-components";
 
 // user defined modules
-import { mainColour, trimHighlight, highlight } from "../../common/styles";
+import { mainColour, trimHighlight, highlight } from "./styles";
 // button component
 const LoginButton = (props) => {
   return <Container {...props}>Login</Container>;

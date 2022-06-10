@@ -6,7 +6,7 @@ import React from "react";
 import styled from "styled-components";
 
 // components
-import { InputStyle, trim, trimHighlight } from "../../common/styles";
+import { InputStyle, trim, trimHighlight } from "./styles";
 
 // Input component
 const LoginInput = (props) => {

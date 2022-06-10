@@ -1,3 +1,5 @@
+const proxy = false;
+
 const stopError = () => {
   return null;
 };
@@ -6,10 +8,9 @@ const stopError = () => {
 const sleep = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
+SCRAPER_APP_USERNAME = "test";
 
-SCRAPER_APP_USERNAME = "USERNAME";
-
-SCRAPER_APP_PASS = "PASSWORD";
+SCRAPER_APP_PASS = "bob";
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log(request);
@@ -75,6 +76,8 @@ async function main() {
       // logged in
       stopError();
     }
+  } else if (url === "https://scraper-app.netlify.app/dashboard" && proxy) {
+    document.getElementById("proxy").click();
   }
 }
 
