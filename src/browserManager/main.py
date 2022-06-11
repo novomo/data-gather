@@ -127,10 +127,11 @@ def main():
         monitoring = True
     else:
         monitoring = False
-    
+    print(1)
     BOT.loadChromedriver(key='standard')
+    print(2)
     BOT.loadChromedriver(key='proxyDriver', opts={'proxy': "socks5://127.0.0.1:9050"})
-    
+    sleep(100000)
     while True:
         currentTasks: List[Dict] = getTasks(BOT)
         print(currentTasks)

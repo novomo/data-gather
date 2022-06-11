@@ -7,6 +7,6 @@
 [submodule "src/master-bot"]
 	path = src/master-bot
 	url = https://github.com/novomo/master-bot.git
-[submodule "src/browserManager/--force"]
-	path = src/browserManager/--force
+[submodule "src/browserManager/master-bot"]
+	path = src/browserManager/master-bot
 	url = https://github.com/novomo/master-bot.git
