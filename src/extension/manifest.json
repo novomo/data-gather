@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "Scraper Extension",
+  "description": "",
+  "version": "0.0.1",
+  "icons": {
+    "16": "logo/logo.png",
+    "48": "logo/logo.png",
+    "128": "logo/logo.png"
+  },
+  "permissions": [
+    "storage",
+    "cookies",
+    "tabs",
+    "notifications",
+    "scripting",
+    "activeTab",
+    "alarms"
+  ],
+  "host_permissions": [
+    "*://*/*",
+    "https://api.iquation-corp.com/graphql",
+    "http://micro.iquation-corp.com:5000/dataparser"
+  ],
+  "background": {
+    "service_worker": "assets/serviceWorker.js"
+  },
+  "action": {
+    "default_icon": "logo/logo.png"
+  },
+  "content_scripts": [
+    {
+      "js": ["content.js"],
+      "matches": ["<all_urls>"],
+      "run_at": "document_start"
+    }
+  ]
+}
