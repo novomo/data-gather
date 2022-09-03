@@ -1,73 +1,12 @@
-import os
-import sys
+
+import sys, os
 from time import sleep
+
+from secrets import TOR_PASS, HOOK_URL
 import traceback
-from typing import Dict, List
 from discord_webhook import DiscordWebhook
-from secrets import HOOK_URL, TOR_PASS
-import requests
-from helpers import importModuleByPath
-from api import getTasks
-from sportsParsers.sportsFixtures import getSportsFixturePages
-from sportsParsers.esportsFixtures import getESportsFixturePages
-from sportsParsers.liveLinks import getLiveTennisUrlPages
-from sportsParsers.betfairOdds import getBetfairDataPages, getStartingSoonEventsPages
-from sportsParsers.tipstersProfiler import getTipsterProfilingPages
+from scraper import ScraperBot
 
-MAX_TASKS: int = 5
-
-
-TASK_OBJ = {
-    "sportsFixtures": {
-    "compilePageList": getSportsFixturePages,
-    "opts": {
-        "sportsList":  [
-                        'football',
-                        'basketball',
-                        'baseball',
-                        'ice-hockey',
-                        'volleyball',
-                        'handball',
-                        'rugby',
-                        'american-football',
-                        'table-tennis',
-                        'darts',
-                        'cricket',
-                        'snooker',
-                        'futsal',
-                        'badminton',
-                        'aussie-rules',
-                        'beach-volleyball',
-                        'waterpolo',
-                        'floorball',
-                        'bandy'
-                    ]
-    }
-  },
-  "eSportsFixtures": {
-    "compilePageList": getESportsFixturePages,
-  },
-  "tennisFixtures": {
-    "compilePageList": getSportsFixturePages,
-    "opts": {
-        "sportsList":  [
-                        'tennis'
-                    ]
-    }
-  },
-  "liveTennisUrls": {
-    "compilePageList": getLiveTennisUrlPages,
-  },
-  "tipsterProfiling": {
-    "compilePageList": getTipsterProfilingPages,
-  },
-  "betfairEventIds": {
-    "compilePageList": getBetfairDataPages,
-  },
-  "betfairStartingOdss": {
-    "compilePageList": getStartingSoonEventsPages,
-  },
-}
 
 
 
@@ -92,10 +31,10 @@ def cronFinished (finished, cron):
                     }}"""
     run_query(query, BOT)
     '''
-     
+        
+        
 def main():
-    DIRECTORY = os.path.dirname(os.path.abspath(__file__))
-    masterBot = importModuleByPath(f'/{DIRECTORY}/master-bot/src/app.py')
+    os.system('killall chrome')
 
     if '-d' in sys.argv:
         headless = False
@@ -112,7 +51,7 @@ def main():
     else:
         torPass = ''
 
-    BOT = masterBot.Bot(
+    BOT = ScraperBot(
         requestBot=True, 
         seleniumBot=True, 
         headless=headless,
@@ -122,37 +61,48 @@ def main():
         loadChrome=False
     )
 
-
-    if '-m' in sys.argv:
-        monitoring = True
-    else:
-        monitoring = False
     print(1)
     BOT.loadChromedriver(key='standard')
     print(2)
     BOT.loadChromedriver(key='proxyDriver', opts={'proxy': "socks5://127.0.0.1:9050"})
-    sleep(100000)
-    while True:
-        currentTasks: List[Dict] = getTasks(BOT)
-        print(currentTasks)
-        if len(currentTasks) == 0:
-            sleep(900)
-            continue
-        for task in currentTasks:
-            if task['stage'] == "New":
-                if 'opts' in TASK_OBJ[task['task']]:
-                    opts = TASK_OBJ[task['task']]["opts"]
-                else:
-                    opts = {}
-                print(task)
-                BOT = TASK_OBJ[task['task']]["compilePageList"](BOT, opts)
+    sleep(2)
+    try:
+        while True:
+            try:
+                BOT.getScraperingTasks()
+                print(BOT.tasks)         
+                for task in BOT.tasks:
+                    if task['stage'] == "New":
+                        if 'opts' in BOT.config[task['task']]:
+                            opts = BOT.config[task['task']]["opts"]
+                        else:
+                            opts = {}
+                        print(task)
+                        BOT.config[task['task']]["compilePageList"](opts)
+                sleep(900)
+            except ValueError:
+                BOT.quit()
+                BOT = None
+                os.system('killall chrome')
+                BOT = ScraperBot(
+                    requestBot=True, 
+                    seleniumBot=True, 
+                    headless=headless,
+                    implicitWait=3, 
+                    proxy=proxy, 
+                    torPass=torPass,
+                    loadChrome=False
+                )
+                print(1)
+                BOT.loadChromedriver(key='standard')
+                print(2)
+                BOT.loadChromedriver(key='proxyDriver', opts={'proxy': "socks5://127.0.0.1:9050"})
+                sleep(2)
+
+    except:
+        traceback.print_exc()
+        DiscordWebhook(url=HOOK_URL, content=traceback.format_exc()).execute()
                 
-                    
-        
-        break
-    
-    
-    
     ''''
     if monitoring:
         DiscordWebhook(url=HOOK_URL, content='Started daily sports data collection').execute()

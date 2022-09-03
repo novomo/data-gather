@@ -1,3 +1,4 @@
+from platform import platform
 from sportsParsers.blogabet import blogabet
 
 TIPPING_PLATFORMS = {
@@ -7,9 +8,17 @@ TIPPING_PLATFORMS = {
 
 
 def getTipsterProfilingPages(BOT, opts):
+    tipsterData = []
     for key in TIPPING_PLATFORMS:
         print(key)
-        TIPPING_PLATFORMS[key](BOT)
+        [BOT, data] = TIPPING_PLATFORMS[key](BOT)
+        tipsterData.append(data)
+    return [BOT, tipsterData]
+    
+    
+def getTipsterData():
+    pass
+    
 
 
 

@@ -1,4 +1,4 @@
-from secrets import API_URL, HEADERS
+
 
 
 # A simple function to use requests.post to make the API call. Note the json= section.

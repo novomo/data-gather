@@ -20,7 +20,7 @@ def click_on_menu(linkText):
         # stop slow interaction with site for bot controls
         sleep(2)
         try:
-            menu = BOT.headlessWaitForElement("visible", 'blog-menu', BOT.By.CLASS_NAME)
+            menu = BOT.headlessWaitForElement("visible", 'blog-menu', BOT.By.CLASS_NAME, driverKey="proxyDriver")
         except selenium.common.exceptions.TimeoutException:
             continue
         break
@@ -43,7 +43,7 @@ def load_all_tipsters():
     while True:
         try:
             BOT.headlessWaitForElement(
-                "visible", '_load-more', BOT.By.ID, waitTime=3)
+                "visible", '_load-more', BOT.By.ID, waitTime=3, driverKey="proxyDriver")
             
             moreBtn = BOT.drivers['proxyDriver'].find_element_by_id('_load-more')
             print(moreBtn)
@@ -82,13 +82,20 @@ def blogabet(bot):
     go_to_following_page()
     load_all_tipsters()
     start_tipster_details()
+    tipsterPages = []
     for key, tipster in TIPSTER_STATS.items():
-        pages = {}
+        print(tipster)
+        pages = {'platform': 'blogabet'}
         BOT.drivers['proxyDriver'].get(tipster['link'])
         sleep(2)
-        pages['dashboard'] = BeautifulSoup(BOT.drivers['proxyDriver'].find_element(BOT.By.TAG_NAME, 'body'), 'lxml')
+        #print(BOT.drivers['proxyDriver'].find_element(BOT.By.TAG_NAME, 'body').get_attribute('innerHTML'))
+        pages['dashboard'] = BeautifulSoup(BOT.drivers['proxyDriver'].find_element(BOT.By.TAG_NAME, 'body').get_attribute('innerHTML'), 'lxml')
         click_on_menu('FOLLOWING')
         sleep(2)
-        pages['stats'] = BeautifulSoup(BOT.drivers['proxyDriver'].find_element(BOT.By.TAG_NAME, 'body'), 'lxml')
-        
-    return BOT
+        pages['stats'] = BeautifulSoup(BOT.drivers['proxyDriver'].find_element(BOT.By.TAG_NAME, 'body').get_attribute('innerHTML'), 'lxml')
+        tipsterPages.append(pages)
+    
+
+
+def getBlogabetData():
+    pass

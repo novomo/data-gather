@@ -1,0 +1,22 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "main.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "nodemon main.js"
+  },
+  "dependencies": {
+    "countryjs": "^1.8.0",
+    "date-and-time": "^2.3.1",
+    "express": "^4.18.1",
+    "jsoup": "^1.0.0",
+    "jssoup": "^0.0.15",
+    "micro-strptime": "^0.2.3",
+    "node-fetch": "^2.6.7",
+    "node-html-parser": "^5.3.3",
+    "py-datetime": "^0.8.2",
+    "strptime": "^0.0.1",
+    "webhook-discord": "^3.7.8"
+  }
+}

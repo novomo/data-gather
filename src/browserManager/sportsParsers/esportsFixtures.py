@@ -11,7 +11,7 @@ def getESportsFixturePages(BOT, opts):
     BOT.makeSoup(soupText)
     #print(BOT.soup)
     matches = BOT.soupSelectEle('div', {'class': 'make_bnt_list'})
-    return BOT
+    return [BOT, matches]
 
 
 def getESportsFixtureData():
