@@ -2,7 +2,7 @@
 import sys, os
 from time import sleep
 
-from secrets import TOR_PASS, HOOK_URL
+from secret import TOR_PASS, HOOK_URL
 import traceback
 from discord_webhook import DiscordWebhook
 from scraper import ScraperBot
