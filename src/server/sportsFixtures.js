@@ -100,7 +100,7 @@ module.exports.parseSportsData = async (sportsData) => {
           .includes("wta") ||
         jsonData[i]["tournament"]["category"]["name"]
           .toLowerCase()
-          .includes("w-itf")
+          .includes("itf women")
       ) {
         eventType = "Women";
       } else if (
@@ -109,7 +109,7 @@ module.exports.parseSportsData = async (sportsData) => {
           .includes("atp") ||
         jsonData[i]["tournament"]["category"]["name"]
           .toLowerCase()
-          .includes("m-itf")
+          .includes("itf men")
       ) {
         eventType = "Men";
       } else if (
@@ -122,7 +122,7 @@ module.exports.parseSportsData = async (sportsData) => {
         eventType = "Women";
       } else if (
         competition.search(/\su\d\d/i) ||
-        competition.toLowerCase().includes("youth")
+        competition.toLowerCase().includes("youth") || (competition.toLowerCase().includes("juniors") && sport === "tennis")
       ) {
         eventType = "Youth";
       } else {
