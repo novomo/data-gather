@@ -42,11 +42,11 @@ def main():
         headless = True
 
     if '-p' in sys.argv:
-        proxy = "socks5://127.0.0.1:9050"
+        proxy = "socks5://127.0.0.1:9051"
     else:
         proxy = ""
         
-    if proxy == "socks5://127.0.0.1:9050":
+    if proxy == "socks5://127.0.0.1:9051":
         torPass = TOR_PASS
     else:
         torPass = ''
@@ -64,7 +64,7 @@ def main():
     print(1)
     BOT.loadChromedriver(key='standard')
     print(2)
-    BOT.loadChromedriver(key='proxyDriver', opts={'proxy': "socks5://127.0.0.1:9050"})
+    BOT.loadChromedriver(key='proxyDriver', opts={'proxy': "socks5://127.0.0.1:9051"})
     sleep(2)
     try:
         while True:
@@ -96,7 +96,7 @@ def main():
                 print(1)
                 BOT.loadChromedriver(key='standard')
                 print(2)
-                BOT.loadChromedriver(key='proxyDriver', opts={'proxy': "socks5://127.0.0.1:9050"})
+                BOT.loadChromedriver(key='proxyDriver', opts={'proxy': "socks5://127.0.0.1:9051"})
                 sleep(2)
 
     except:
