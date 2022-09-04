@@ -112,12 +112,7 @@ class ScraperBot(masterBot.Bot):
           getTasks
             {{
               task
-              tabStatus
-              currentPage
-              pages
               stage
-              tabId
-              gotCurrent
               settings {{
                 proxy
               }}
