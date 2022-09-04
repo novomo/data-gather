@@ -1070,7 +1070,7 @@ class ScraperBot(masterBot.Bot):
                     while True:
                         try:
                             self.drivers['proxyDriver'].get(rankingURL)
-                            data = self.drivers['proxyDriver'].find_element(self.By.TAG_NAME, 'html').get_attribute('innerHTML')
+                            data = self.drivers['proxyDriver'].find_element(self.By.TAG_NAME, 'pre').text
                             print(data)
                             data = json.loads(data)
                             break
