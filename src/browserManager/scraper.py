@@ -165,7 +165,7 @@ class ScraperBot(masterBot.Bot):
                 getDateText = getDate.strftime("%Y-%m-%d")
                 print(getDateText)
                 url = f"{SPORTS_BASE_URL}/{sportName}/{getDateText}"
-                self.changeIP(driverKey="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9051"})
+                self.changeIP(driverKey="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9050"})
                 print(url)
                 while True:
                     try:
@@ -205,30 +205,30 @@ class ScraperBot(masterBot.Bot):
                             except selenium.common.exceptions.WebDriverException:
                                 sleep(1)
                                 self.drivers['proxyDriver'].quit()
-                                self.loadChromedriver(key="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9051"})
+                                self.loadChromedriver(key="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9050"})
                             except selenium.common.exceptions.NoSuchWindowException:
                                 sleep(1)
                                 self.drivers['proxyDriver'].quit()
-                                self.loadChromedriver(key="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9051"})
+                                self.loadChromedriver(key="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9050"})
                             except selenium.common.exceptions.TimeoutException:
                                 sleep(1)
                                 self.drivers['proxyDriver'].quit()
-                                self.loadChromedriver(key="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9051"})
+                                self.loadChromedriver(key="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9050"})
                         if button:
                             sleep(2)
                             try:
                                 self.drivers['proxyDriver'].get(f'https://api.sofascore.com/api/v1/sport/{sportName}/scheduled-events/{getDateText}/inverse')
                             except selenium.common.exceptions.WebDriverException:
                                 self.drivers['proxyDriver'].quit()
-                                self.loadChromedriver(key='proxyDriver', opts={'proxy': "socks5://127.0.0.1:9051"})
+                                self.loadChromedriver(key='proxyDriver', opts={'proxy': "socks5://127.0.0.1:9050"})
                                 self.drives['proxyDriver'].get(f'https://api.sofascore.com/api/v1/sport/{sportName}/scheduled-events/{getDateText}/inverse')
                             except selenium.common.exceptions.NoSuchWindowException:
                                 self.drivers['proxyDriver'].quit()
-                                self.loadChromedriver(key='proxyDriver', opts={'proxy': "socks5://127.0.0.1:9051"})
+                                self.loadChromedriver(key='proxyDriver', opts={'proxy': "socks5://127.0.0.1:9050"})
                                 self.drivers['proxyDriver'].get(f'https://api.sofascore.com/api/v1/sport/{sportName}/scheduled-events/{getDateText}/inverse')
                             except selenium.common.exceptions.TimeoutException:
                                 self.drivers['proxyDriver'].quit()
-                                self.loadChromedriver(key='proxyDriver', opts={'proxy': "socks5://127.0.0.1:9051"})
+                                self.loadChromedriver(key='proxyDriver', opts={'proxy': "socks5://127.0.0.1:9050"})
                                 self.drivers['proxyDriver'].get(f'https://api.sofascore.com/api/v1/sport/{sportName}/scheduled-events/{getDateText}/inverse')
                             gamesToAdd = self.drivers['proxyDriver'].find_element(self.By.TAG_NAME, 'body').text
                             #print(gamesToAdd)
@@ -244,7 +244,7 @@ class ScraperBot(masterBot.Bot):
                         if SERVER in games:
                             raise ValueError('tor not working')
                         print('changing IP')
-                        self.changeIP(driverKey="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9051"})
+                        self.changeIP(driverKey="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9050"})
                         sleep(1)  
                 getDate = getDate + timedelta(1)
         if ('tennis' in opts['sportsList']):
@@ -560,7 +560,7 @@ class ScraperBot(masterBot.Bot):
                 body = self.drivers['proxyDriver'].find_element(self.By.TAG_NAME, 'body').text
                 print(body)
                 if "You don't have permission to access" in body:
-                    self.changeIP(driverKey="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9051"})
+                    self.changeIP(driverKey="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9050"})
                     continue
                     
                 break                
@@ -863,7 +863,7 @@ class ScraperBot(masterBot.Bot):
                     except selenium.common.exceptions.TimeoutException:
                         sleep(1)
                         self.drivers['proxyDriver'].quit()
-                        self.loadChromedriver(key="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9051"})
+                        self.loadChromedriver(key="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9050"})
 
                 query = f"""query {{
                         matchSportsEvent(
@@ -903,11 +903,11 @@ class ScraperBot(masterBot.Bot):
                         break
                     except selenium.common.exceptions.StaleElementReferenceException:
                         sleep(1)
-                        self.changeIP(driverKey="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9051"})
+                        self.changeIP(driverKey="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9050"})
                         self.drivers['proxyDriver'].get(f"{match['url']}/head2head/")
                     except selenium.common.exceptions.TimeoutException:
                         sleep(1)
-                        self.changeIP(driverKey="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9051"})
+                        self.changeIP(driverKey="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9050"})
                         self.drivers['proxyDriver'].get(f"{match['url']}/head2head/")
                     attempts = attempts + 1
                 if attempts == 3:
@@ -1063,7 +1063,7 @@ class ScraperBot(masterBot.Bot):
         self.sendTaskUpdate("liveFootballUrls", {"task":"liveFootballUrls", "stage":"Complete"})
         
     def getTennisRankingsPages(self, opts):
-        self.changeIP(driverKey="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9051"})
+        self.changeIP(driverKey="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9050"})
         for rankingURL in ['https://api.sofascore.com/api/v1/rankings/type/5', 'https://api.sofascore.com/api/v1/rankings/type/6']:
             while True:
                 try:
@@ -1077,21 +1077,21 @@ class ScraperBot(masterBot.Bot):
                         except selenium.common.exceptions.WebDriverException:
                             sleep(1)
                             self.drivers['proxyDriver'].quit()
-                            self.loadChromedriver(key="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9051"})
+                            self.loadChromedriver(key="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9050"})
                         except selenium.common.exceptions.NoSuchWindowException:
                             sleep(1)
                             self.drivers['proxyDriver'].quit()
-                            self.loadChromedriver(key="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9051"})
+                            self.loadChromedriver(key="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9050"})
                         except selenium.common.exceptions.TimeoutException:
                             sleep(1)
                             self.drivers['proxyDriver'].quit()
-                            self.loadChromedriver(key="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9051"})
+                            self.loadChromedriver(key="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9050"})
                     break
                 except json.decoder.JSONDecodeError:
                     if SERVER in data:
                         raise ValueError('tor not working')
                     print('changing IP')
-                    self.changeIP(driverKey="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9051"})
+                    self.changeIP(driverKey="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9050"})
                     sleep(1)  
             data = {
                     'task': 'tennisRankings',
