@@ -2,9 +2,8 @@ from time import sleep
 import selenium, json, traceback, os, sys
 from typing import Dict, List
 from datetime import datetime, timedelta, date
-from secrets import API_URL, HEADERS, SPORTS_BASE_URL, ESPORTS_BASE_URL, \
-    BETFAIR_HEADERS_GET, BETFAIR_HEADERS_MARKET, BLOGABET_PROFILE, TENNIS_LIVE_BASE_URL, SERVER, \
-        TENNIS_RANKINGS_BASE_URL
+from secret import API_URL, HEADERS, SPORTS_BASE_URL, ESPORTS_BASE_URL, \
+    BETFAIR_HEADERS_GET, BETFAIR_HEADERS_MARKET, BLOGABET_PROFILE, TENNIS_LIVE_BASE_URL, SERVER
 from helpers import importModuleByPath, chunks
 from selenium.webdriver.common.action_chains import ActionChains
 import requests
