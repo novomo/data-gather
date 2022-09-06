@@ -175,6 +175,7 @@ class ScraperBot(masterBot.Bot):
         for tip in tips:
 
             self.drivers['proxyDriver'].get(tip['url'])
+            sleep(2)
             spans = self.drivers['proxyDriver'].find_element(self.By.CLASS_NAME, 'labels').find_elements(self.By.TAG_NAME, 'span')
             if len(spans) == 4:
                 result: str = spans[-2].get_attribute('data-original-title').replace("-", " ").strip().lower().capitalize()
