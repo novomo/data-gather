@@ -171,7 +171,8 @@ class ScraperBot(masterBot.Bot):
 }
 
                 """
-        tips: list = self.runQuery(query)
+        jsonData: Dict = self.runQuery(query)
+        tips: list = jsonData['data']['getTips']
         print(tips)
         for tip in tips:
 
