@@ -173,12 +173,13 @@ class ScraperBot(masterBot.Bot):
                 """
         jsonData: Dict = self.runQuery(query)
         tips: list = jsonData['data']['getTips']
-        print(tips)
+
         for tip in tips:
 
             self.drivers['proxyDriver'].get(tip['url'])
             sleep(2)
             spans = self.drivers['proxyDriver'].find_element(self.By.CLASS_NAME, 'labels').find_elements(self.By.TAG_NAME, 'span')
+            print(spans)
             if len(spans) == 4:
                 result: str = spans[-2].get_attribute('data-original-title').replace("-", " ").strip().lower().capitalize()
                 query: str = f"""
