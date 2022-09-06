@@ -8,6 +8,7 @@ from helpers import importModuleByPath, chunks
 from selenium.webdriver.common.action_chains import ActionChains
 import requests
 import unidecode, re
+import random
 
 
 DIRECTORY = os.path.dirname(os.path.abspath(__file__))
@@ -85,6 +86,9 @@ class ScraperBot(masterBot.Bot):
             },
             "userStaking": {
                 "compilePageList": self.updateUserStaking,
+            },
+            "tipResults": {
+                "compilePageList": self.tipResults,
             }
         }
         
@@ -151,6 +155,44 @@ class ScraperBot(masterBot.Bot):
         self.runQuery(query)
         self.sendTaskUpdate("tennisFixtures", {"task":"userStaking", "stage":"Complete"})
     # Page functions
+
+
+    def tipResults(self, opts: Dict):
+        self.sendTaskUpdate("tipResults", {"task":"tipResults", "stage":"In Progress"})
+        self.changeIP(driverKey="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9050"})
+        ipChange: int = random.randrange(5, 10)
+        currentTip: int = 0
+        query: str = """
+            query {
+                getTips(filter: '{"$exists" : {result": false} }') {
+                        _id
+                        url
+                    }
+
+                """
+        tips: list = self.runQuery(query)
+        print(tips)
+        for tip in tips:
+
+            self.drivers['proxyDriver'].get(tip['url'])
+            spans = self.drivers['proxyDriver'].find_element(self.By.CLASS_NAME, 'labels').find_elements(self.By.TAG_NAME, 'span')
+            if len(spans) == 4:
+                result: str = spans[-2].get_attribute('data-original-title').replace("-", " ").strip().lower().capitalize()
+                query: str = f"""
+                                mutation {{
+                                    gupdateTip(alterTip: {{ tipId: "{tip['_id']}" , result: "{result}" }})}}
+
+                            """
+                self.runQuery(query)
+
+            if currentTip == ipChange:
+                self.changeIP(driverKey="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9050"})
+                currentTip = 0
+                ipChange = random.randrange(5, 10)
+            
+
+        self.sendTaskUpdate("tipResults", {"task":"tipResults", "stage":"Complete"})
+
     def getSportsFixturePages(self, opts):
         
         if ('tennis' in opts['sportsList']):
