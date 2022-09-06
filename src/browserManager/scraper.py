@@ -164,10 +164,11 @@ class ScraperBot(masterBot.Bot):
         currentTip: int = 0
         query: str = """
             query {
-                getTips(filter: "{\"$exists\" : {\"result\": false} }") {
-                        _id
-                        url
-                    }
+  getTips(filter: "{\"result\" : {\"$exists\": false} }") {
+    _id
+    url
+  }
+}
 
                 """
         tips: list = self.runQuery(query)
