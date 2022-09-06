@@ -301,7 +301,7 @@ class ScraperBot(masterBot.Bot):
                 print(followingLink)
                 followingLink.click()
             except selenium.common.exceptions.ElementClickInterceptedException:
-                buttons = self.drivers['proxyDriver'].find_elements_by_xpath("//*[contains(text(), 'Yes, I am over 18')]")
+                buttons = self.drivers['proxyDriver'].find_elements(self.By.XPATH,"//*[contains(text(), 'Yes, I am over 18')]")
                 buttons[0].click()
                 sleep(2)
                 followingLink = menu.find_element(self.By.PARTIAL_LINK_TEXT, linkText)
@@ -335,7 +335,7 @@ class ScraperBot(masterBot.Bot):
         def start_tipster_details():
 
             tipsters = self.drivers['proxyDriver'].find_element(self.By.ID, 
-                '_following').find_elements_by_tag_name('li')
+                '_following').find_elements(self.By.TAG_NAME,'li')
             for tipster in tipsters:
                 print(tipster)
                 dets = tipster.find_element(self.By.CLASS_NAME, 
@@ -604,7 +604,7 @@ class ScraperBot(masterBot.Bot):
                 self.drivers['proxyDriver'].execute_script(jsScript)
             
         def clickCompetitionHeaders():
-            groupHeads = self.drivers['proxyDriver'].find_elements_by_class_name('group-head')
+            groupHeads = self.drivers['proxyDriver'].find_elements(self.By.CLASS_NAME,'group-head')
             for groupHead in groupHeads:
                 try:
                     if 'clickable' in groupHead.get_attribute('class'):
@@ -625,7 +625,7 @@ class ScraperBot(masterBot.Bot):
         def getMatchData():
             comps = {}
             matches = []
-            matchTable = self.drivers['proxyDriver'].find_element(self.By.CLASS_NAME, 'matches_new').find_elements_by_tag_name('tr')
+            matchTable = self.drivers['proxyDriver'].find_element(self.By.CLASS_NAME, 'matches_new').find_elements(self.By.TAG_NAME,'tr')
 
             competiton = ''
             region = ''
@@ -730,7 +730,7 @@ class ScraperBot(masterBot.Bot):
                     continue
                 self.drivers['proxyDriver'].execute_script("arguments[0].click();", ele)
                 sleep(2)
-                tableRows = self.drivers['proxyDriver'].find_element(self.By.XPATH, '//table[contains(@class, "leaguetable")]').find_element(self.By.TAG_NAME, 'tbody').find_elements_by_tag_name('tr')
+                tableRows = self.drivers['proxyDriver'].find_element(self.By.XPATH, '//table[contains(@class, "leaguetable")]').find_element(self.By.TAG_NAME, 'tbody').find_elements(self.By.TAG_NAME,'tr')
                 comp['total'] = {
                         'matchesPlayed':0,
                         'goalsScored':0,
@@ -758,7 +758,7 @@ class ScraperBot(masterBot.Bot):
                             comp['away']['goalsConceded'] = comp['away']['goalsConceded'] + int(row.find_element(self.By.CLASS_NAME, 'away_ga').text.strip())
                         break
                     except selenium.common.exceptions.StaleElementReferenceException:
-                        tableRows = self.drivers['proxyDriver'].find_element(self.By.XPATH, '//table[contains(@class, "leaguetable")]').find_element(self.By.TAG_NAME, 'tbody').find_elements_by_tag_name('tr')
+                        tableRows = self.drivers['proxyDriver'].find_element(self.By.XPATH, '//table[contains(@class, "leaguetable")]').find_element(self.By.TAG_NAME, 'tbody').find_elements(self.By.TAG_NAME,'tr')
                 
                 comp['total']['matchesPlayed'] = comp['home']['matchesPlayed'] + comp['away']['matchesPlayed']
                 comp['total']['goalsScored'] = comp['total']['goalsScored'] + comp['away']['goalsScored']
@@ -780,7 +780,7 @@ class ScraperBot(masterBot.Bot):
                     formTableRows = self.drivers['proxyDriver'].find_element(self.By.CLASS_NAME, 'block_h2hsection_form-wrapper') \
                                     .find_element(self.By.CLASS_NAME, side) \
                                     .find_element(self.By.TAG_NAME, 'table') \
-                                    .find_elements_by_tag_name('tr')
+                                    .find_elements(self.By.TAG_NAME,'tr')
                     print(i)
                     totalGs = 0
                     totalGc = 0
@@ -793,7 +793,7 @@ class ScraperBot(masterBot.Bot):
                         print(formTableRow.get_attribute('class'))
                         if 'match' in formTableRow.get_attribute('class'):
                             score = formTableRow.find_element(self.By.CLASS_NAME, 'score-time').text
-                            where = formTableRow.find_elements_by_tag_name('td')[4].text
+                            where = formTableRow.find_elements(self.By.TAG_NAME,'td')[4].text
                             print(score)
                             if score != '-' and ' - ' in score:
                                 goals = score.split(' - ')
@@ -843,12 +843,12 @@ class ScraperBot(masterBot.Bot):
                 
                     if i<2:
                         print(i)
-                        menuBtn = self.drivers['proxyDriver'].find_element(self.By.CLASS_NAME, 'block_h2hsection_form-wrapper').find_element(self.By.CLASS_NAME, side).find_element(self.By.CLASS_NAME, 'subnav').find_elements_by_tag_name('li')[i+1].find_element(self.By.TAG_NAME, 'a')
+                        menuBtn = self.drivers['proxyDriver'].find_element(self.By.CLASS_NAME, 'block_h2hsection_form-wrapper').find_element(self.By.CLASS_NAME, side).find_element(self.By.CLASS_NAME, 'subnav').find_elements(self.By.TAG_NAME,'li')[i+1].find_element(self.By.TAG_NAME, 'a')
                         self.drivers['proxyDriver'].execute_script(
                             "arguments[0].scrollIntoView();", menuBtn)
                         self.drivers['proxyDriver'].execute_script('arguments[0].click()', menuBtn)
 
-                        print(self.drivers['proxyDriver'].find_element(self.By.CLASS_NAME, 'block_h2hsection_form-wrapper').find_element(self.By.CLASS_NAME, side).find_element(self.By.CLASS_NAME, 'subnav').find_elements_by_tag_name('li')[i+1].find_element(self.By.TAG_NAME, 'a'))
+                        print(self.drivers['proxyDriver'].find_element(self.By.CLASS_NAME, 'block_h2hsection_form-wrapper').find_element(self.By.CLASS_NAME, side).find_element(self.By.CLASS_NAME, 'subnav').find_elements(self.By.TAG_NAME,'li')[i+1].find_element(self.By.TAG_NAME, 'a'))
 
                         sleep(2)
                 forms[side] = formData
@@ -1047,7 +1047,7 @@ class ScraperBot(masterBot.Bot):
                             print(data)
                 sleep(10)        
                 try:
-                    nextPageBtn = self.drivers['proxyDriver'].find_element(self.By.CLASS_NAME, 'pagination').find_elements_by_tag_name('li')[-1]
+                    nextPageBtn = self.drivers['proxyDriver'].find_element(self.By.CLASS_NAME, 'pagination').find_elements(self.By.TAG_NAME,'li')[-1]
 
                     if 'Next' in nextPageBtn.text:
                         print('click')
