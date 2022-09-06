@@ -164,7 +164,7 @@ class ScraperBot(masterBot.Bot):
         currentTip: int = 0
         query: str = """
             query {
-  getTips(filter: "{\"result\" : {\"$exists\": false} }") {
+  getTips(filter: "{\\"result\\" : {\\"$exists\\": false} }") {
     _id
     url
   }
