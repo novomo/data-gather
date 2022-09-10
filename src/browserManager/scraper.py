@@ -1006,8 +1006,6 @@ class ScraperBot(masterBot.Bot):
             #BOT.changeIP()
             self.drivers['proxyDriver'].get(f'https://www.scorebing.com/fixtures/{currentDateStr}')
             print(f'https://www.scorebing.com/fixtures/{currentDateStr}')
-            #print(self.drivers['proxyDriver'].find_element(self.By.TAG_NAME, 'body').get_attribute('innerHTML'))
-
             nextPageBtn = True
             while nextPageBtn:
                 self.makeSoup(self.drivers['proxyDriver'].find_element(self.By.TAG_NAME, 'body').get_attribute('innerHTML'))
@@ -1094,20 +1092,19 @@ class ScraperBot(masterBot.Bot):
                             data = self.runQuery(queryStr)
                             print(data)
                 sleep(10)        
-                #try:
-                nextPageBtn = self.drivers['proxyDriver'].find_element(self.By.CLASS_NAME, 'pagination').find_elements(self.By.TAG_NAME,'li')[-1]
+                try:
+                    nextPageBtn = self.drivers['proxyDriver'].find_element(self.By.CLASS_NAME, 'pagination').find_elements(self.By.TAG_NAME,'li')[-1]
 
-                if 'Next' in nextPageBtn.text:
-                    print('click')
-                    nextPageBtn.click()
-                    sleep(3)
-                else:
-                    nextPageBtn = False
+                    if 'Next' in nextPageBtn.text:
+                        print('click')
+                        nextPageBtn.click()
+                        sleep(3)
+                    else:
+                        nextPageBtn = False
                 except selenium.common.exceptions.StaleElementReferenceException:
                     nextPageBtn = False
                 except selenium.common.exceptions.NoSuchElementException:
                     nextPageBtn = False
-
             currentDate = currentDate + timedelta(days=1)
         self.sendTaskUpdate("liveFootballUrls", {"task":"liveFootballUrls", "stage":"Complete"})
         
