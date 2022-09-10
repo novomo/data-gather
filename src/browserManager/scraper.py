@@ -146,7 +146,7 @@ class ScraperBot(masterBot.Bot):
                 request.status_code, query))
     
     def updateUserStaking(self, opts):
-        self.sendTaskUpdate("tennisFixtures", {"task":"userStaking", "stage":"In Progress"})
+        self.sendTaskUpdate("userStaking", {"task":"userStaking", "stage":"In Progress"})
         query = """
             query {
                 updateStaking
@@ -1006,6 +1006,7 @@ class ScraperBot(masterBot.Bot):
             #BOT.changeIP()
             self.drivers['proxyDriver'].get(f'https://www.scorebing.com/fixtures/{currentDateStr}')
             print(f'https://www.scorebing.com/fixtures/{currentDateStr}')
+            print(self.drivers['proxyDriver'].find_element(self.By.TAG_NAME, 'body').get_attribute('innerHTML'))
             try:
                 nextPageBtn = True
                 while nextPageBtn:
