@@ -1006,109 +1006,108 @@ class ScraperBot(masterBot.Bot):
             #BOT.changeIP()
             self.drivers['proxyDriver'].get(f'https://www.scorebing.com/fixtures/{currentDateStr}')
             print(f'https://www.scorebing.com/fixtures/{currentDateStr}')
-            print(self.drivers['proxyDriver'].find_element(self.By.TAG_NAME, 'body').get_attribute('innerHTML'))
-            try:
-                nextPageBtn = True
-                while nextPageBtn:
-                    self.makeSoup(self.drivers['proxyDriver'].find_element(self.By.TAG_NAME, 'body').get_attribute('innerHTML'))
-                    print(self.soup)
-                    tables = self.soup.find_all('table', {'class': 'live-list-table'})
-                    for table in tables:
-                        print(table.get_attribute('innerHTML'))
-                        tbody = table.find('tbody')
-                        print(tbody)
-                        if not tbody or type(tbody) is None:
-                            continue
+            #print(self.drivers['proxyDriver'].find_element(self.By.TAG_NAME, 'body').get_attribute('innerHTML'))
+
+            nextPageBtn = True
+            while nextPageBtn:
+                self.makeSoup(self.drivers['proxyDriver'].find_element(self.By.TAG_NAME, 'body').get_attribute('innerHTML'))
+                #print(self.soup)
+                tables = self.soup.find_all('table', {'class': 'live-list-table'})
+                for table in tables:
+                    #print(table.get_attribute('innerHTML'))
+                    tbody = table.find('tbody')
+                    #print(tbody)
+                    if not tbody or type(tbody) is None:
+                        continue
+                
                     
+                    rows = tbody.find_all('tr')
+                    for row in rows:
+                        #print(row)
+                        tds = row.find_all('td')
                         
-                        rows = tbody.find_all('tr')
-                        for row in rows:
-                            #print(row)
-                            tds = row.find_all('td')
-                            
-                            matchDate = datetime.strptime(tds[1].text.strip().split(' ')[0], '%y/%m/%d')
-                            print(matchDate, datetime.strptime(currentDateStr, '%Y%m%d'))
-                            if matchDate != datetime.strptime(currentDateStr, '%Y%m%d'):
-                                continue
-                            matchDate = datetime.strptime(tds[1].text.strip(), '%y/%m/%d %H:%M')
-                            homeTeam = tds[2].find('a').text.replace('\n', '').strip()
-                            awayTeam = tds[4].find('a').text.replace('\n', '').strip()
-                            homeTeamURL = f"https://www.scorebing.com{tds[2].find('a')['href']}"
-                            awayTeamURL = f"https://www.scorebing.com{tds[4].find('a')['href']}"
-                            homeTeamID =  tds[2].find('a')['href'].split('/')[-1]
-                            awayTeamID =  tds[4].find('a')['href'].split('/')[-1]
-                            compDets = tds[0].find('a').text.split(' ', 1)
-                            print(compDets)
-                            region = compDets[0]
-                            if len(compDets) == 1:
-                                competition = compDets[0]
-                            else: 
-                                competition = compDets[1]
+                        matchDate = datetime.strptime(tds[1].text.strip().split(' ')[0], '%y/%m/%d')
+                        print(matchDate, datetime.strptime(currentDateStr, '%Y%m%d'))
+                        if matchDate != datetime.strptime(currentDateStr, '%Y%m%d'):
+                            continue
+                        matchDate = datetime.strptime(tds[1].text.strip(), '%y/%m/%d %H:%M')
+                        homeTeam = tds[2].find('a').text.replace('\n', '').strip()
+                        awayTeam = tds[4].find('a').text.replace('\n', '').strip()
+                        homeTeamURL = f"https://www.scorebing.com{tds[2].find('a')['href']}"
+                        awayTeamURL = f"https://www.scorebing.com{tds[4].find('a')['href']}"
+                        homeTeamID =  tds[2].find('a')['href'].split('/')[-1]
+                        awayTeamID =  tds[4].find('a')['href'].split('/')[-1]
+                        compDets = tds[0].find('a').text.split(' ', 1)
+                        print(compDets)
+                        region = compDets[0]
+                        if len(compDets) == 1:
+                            competition = compDets[0]
+                        else: 
+                            competition = compDets[1]
 
-                            competitionID = tds[0].find('a')['href'].split('/')[-1]
-                            competitionURL = f"https://www.scorebing.com{tds[0].find('a')['href']}"
+                        competitionID = tds[0].find('a')['href'].split('/')[-1]
+                        competitionURL = f"https://www.scorebing.com{tds[0].find('a')['href']}"
 
-                            pattern = re.compile("\su\d\d")
-                            if 'women' in awayTeam.lower() or 'women' in homeTeam.lower():
-                                eventType = 'Women'
-                            elif 'youth' in awayTeam.lower() or 'youth' in homeTeam.lower() or pattern.search(homeTeam.lower()) or pattern.search(awayTeam.lower()):
-                                eventType = 'Youth'
-                            else:
-                                eventType = 'Men'
-                            liveUrl = tds[-2].find('a')['href'].split('/')[-1]
-                            queryStr = f"""query {{
-                                matchSportsEvent(
-                                    inputSportsEvent: {{
-                                        sport: "Football"
-                                        homeTeam: "{homeTeam}",
-                                        awayTeam: "{awayTeam}",
-                                        homeTeamID: "{homeTeamID}",
-                                        homeTeamURL: "{homeTeamURL}",
-                                        awayTeamID: "{awayTeamID}",
-                                        awayTeamURL: "{awayTeamURL}"
-                                        eventDate: {int(matchDate.timestamp())},
-                                        platform: "scorebing",
-                                        region: "{region}",
-                                        competition: "{competition}",
-                                        competitionURL: "{competitionURL}",
-                                        competitionID: "{competitionID}"
-                                        
-                                    }}
-                                ) {{
-                                    _id
+                        pattern = re.compile("\su\d\d")
+                        if 'women' in awayTeam.lower() or 'women' in homeTeam.lower():
+                            eventType = 'Women'
+                        elif 'youth' in awayTeam.lower() or 'youth' in homeTeam.lower() or pattern.search(homeTeam.lower()) or pattern.search(awayTeam.lower()):
+                            eventType = 'Youth'
+                        else:
+                            eventType = 'Men'
+                        liveUrl = tds[-2].find('a')['href'].split('/')[-1]
+                        queryStr = f"""query {{
+                            matchSportsEvent(
+                                inputSportsEvent: {{
+                                    sport: "Football"
+                                    homeTeam: "{homeTeam}",
+                                    awayTeam: "{awayTeam}",
+                                    homeTeamID: "{homeTeamID}",
+                                    homeTeamURL: "{homeTeamURL}",
+                                    awayTeamID: "{awayTeamID}",
+                                    awayTeamURL: "{awayTeamURL}"
+                                    eventDate: {int(matchDate.timestamp())},
+                                    platform: "scorebing",
+                                    region: "{region}",
+                                    competition: "{competition}",
+                                    competitionURL: "{competitionURL}",
+                                    competitionID: "{competitionID}"
+                                    
                                 }}
+                            ) {{
+                                _id
+                            }}
+                        }}"""
+                        print(queryStr)
+                        data = self.runQuery(queryStr)
+                        print(data)
+                        if data['data']['matchSportsEvent']['_id'] != "" and data['data']['matchSportsEvent']['_id'] is not None:
+                        
+                            queryStr = f"""mutation {{
+                                updateSportsEvent(
+                                    inputSportsEvent: {{
+                                        liveUrl: "{liveUrl}"
+                                    }}, 
+                                    _id: "{data['data']['matchSportsEvent']['_id']}"
+                                )
                             }}"""
-                            print(queryStr)
                             data = self.runQuery(queryStr)
                             print(data)
-                            if data['data']['matchSportsEvent']['_id'] != "" and data['data']['matchSportsEvent']['_id'] is not None:
-                            
-                                queryStr = f"""mutation {{
-                                    updateSportsEvent(
-                                        inputSportsEvent: {{
-                                            liveUrl: "{liveUrl}"
-                                        }}, 
-                                        _id: "{data['data']['matchSportsEvent']['_id']}"
-                                    )
-                                }}"""
-                                data = self.runQuery(queryStr)
-                                print(data)
-                    sleep(10)        
-                    #try:
-                    nextPageBtn = self.drivers['proxyDriver'].find_element(self.By.CLASS_NAME, 'pagination').find_elements(self.By.TAG_NAME,'li')[-1]
+                sleep(10)        
+                #try:
+                nextPageBtn = self.drivers['proxyDriver'].find_element(self.By.CLASS_NAME, 'pagination').find_elements(self.By.TAG_NAME,'li')[-1]
 
-                    if 'Next' in nextPageBtn.text:
-                        print('click')
-                        nextPageBtn.click()
-                        sleep(3)
-                    else:
-                        nextPageBtn = False
-                    #except selenium.common.exceptions.StaleElementReferenceException:
-                        #nextPageBtn = False
-                    #except selenium.common.exceptions.NoSuchElementException:
-                        #nextPageBtn = False
-            except:
-                traceback.print_exc()
+                if 'Next' in nextPageBtn.text:
+                    print('click')
+                    nextPageBtn.click()
+                    sleep(3)
+                else:
+                    nextPageBtn = False
+                except selenium.common.exceptions.StaleElementReferenceException:
+                    nextPageBtn = False
+                except selenium.common.exceptions.NoSuchElementException:
+                    nextPageBtn = False
+
             currentDate = currentDate + timedelta(days=1)
         self.sendTaskUpdate("liveFootballUrls", {"task":"liveFootballUrls", "stage":"Complete"})
         
