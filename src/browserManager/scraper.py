@@ -1012,9 +1012,9 @@ class ScraperBot(masterBot.Bot):
                 print(self.soup)
                 tables = self.soup.find_all('table', {'class': 'live-list-table'})
                 for table in tables:
-                    #print(table.get_attribute('innerHTML'))
+                    print(table.get_attribute('innerHTML'))
                     tbody = table.find('tbody')
-                    #print(tbody)
+                    print(tbody)
                     if not tbody or type(tbody) is None:
                         continue
                 
@@ -1092,19 +1092,19 @@ class ScraperBot(masterBot.Bot):
                             data = self.runQuery(queryStr)
                             print(data)
                 sleep(10)        
-                try:
-                    nextPageBtn = self.drivers['proxyDriver'].find_element(self.By.CLASS_NAME, 'pagination').find_elements(self.By.TAG_NAME,'li')[-1]
+                #try:
+                nextPageBtn = self.drivers['proxyDriver'].find_element(self.By.CLASS_NAME, 'pagination').find_elements(self.By.TAG_NAME,'li')[-1]
 
-                    if 'Next' in nextPageBtn.text:
-                        print('click')
-                        nextPageBtn.click()
-                        sleep(3)
-                    else:
-                        nextPageBtn = False
-                except selenium.common.exceptions.StaleElementReferenceException:
+                if 'Next' in nextPageBtn.text:
+                    print('click')
+                    nextPageBtn.click()
+                    sleep(3)
+                else:
                     nextPageBtn = False
-                except selenium.common.exceptions.NoSuchElementException:
-                    nextPageBtn = False
+                #except selenium.common.exceptions.StaleElementReferenceException:
+                    #nextPageBtn = False
+                #except selenium.common.exceptions.NoSuchElementException:
+                    #nextPageBtn = False
             currentDate = currentDate + timedelta(days=1)
         self.sendTaskUpdate("liveFootballUrls", {"task":"liveFootballUrls", "stage":"Complete"})
         
