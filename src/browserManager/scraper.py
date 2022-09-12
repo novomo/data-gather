@@ -226,6 +226,10 @@ class ScraperBot(masterBot.Bot):
         self.sendTaskUpdate("tipResults", {"task":"tipResults", "stage":"Complete"})
 
     def getSportsFixturePages(self, opts):
+        if ('tennis' in opts['sportsList']):
+            self.sendTaskUpdate("tennisFixtures", {"task":"tennisFixtures", "stage":"In Progress"})
+        else:
+            self.sendTaskUpdate("sportsFixtures", {"task":"sportsFixtures", "stage":"In Progress"})
         START_DATE = datetime.now()
         for sportName in opts['sportsList']:
             getDate = datetime.now()
