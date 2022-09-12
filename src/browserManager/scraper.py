@@ -322,10 +322,10 @@ class ScraperBot(masterBot.Bot):
             self.sendTaskUpdate("sportsFixtures", {"task":"sportsFixtures", "stage":"Complete"})
     
     def getHistoricSportsFixturePages(self, opts):
-        with open('historyDate.json') as f:
+        with open(f'{DIRECTORY}/historyDate.json') as f:
             lines = f.readlines()
         print(lines)
-        with open('historyDate.json') as f:
+        with open(f'{DIRECTORY}/historyDate.json') as f:
             d = json.load(f)
         START_DATE = datetime.strptime(d['date'], "%Y-%m-%d")
         getDate = datetime.strptime(d['date'], "%Y-%m-%d")
@@ -419,7 +419,7 @@ class ScraperBot(masterBot.Bot):
                         sleep(1)  
                 getDate = getDate + timedelta(1)
         d['date'] = getDate.strftime("%Y-%m-%d")
-        with open('historyDate.json', 'w') as outfile:
+        with open(f'{DIRECTORY}/historyDate.json', 'w') as outfile:
             outfile.write(json.dumps(d))
         
 
