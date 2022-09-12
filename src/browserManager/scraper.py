@@ -417,7 +417,7 @@ class ScraperBot(masterBot.Bot):
                         print('changing IP')
                         self.changeIP(driverKey="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9050"})
                         sleep(1)  
-                getDate = getDate + timedelta(1)
+            getDate = getDate + timedelta(1)
         d['date'] = getDate.strftime("%Y-%m-%d")
         with open(f'{DIRECTORY}/historyDate.json', 'w') as outfile:
             outfile.write(json.dumps(d))
