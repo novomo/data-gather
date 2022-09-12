@@ -324,7 +324,7 @@ class ScraperBot(masterBot.Bot):
     def getHistoricSportsFixturePages(self, opts):
         with open('historyDate.json') as f:
             d = json.load(f)
-        START_DATE = d['date']
+        START_DATE = d['date'].strptime("2022-08-07", "%Y-%m-%d")
         getDate = datetime.now()
         if START_DATE > datetime.strptime("2022-08-07", "%Y-%m-%d"):
             return
