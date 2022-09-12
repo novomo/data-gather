@@ -323,7 +323,6 @@ class ScraperBot(masterBot.Bot):
     
     def getHistoricSportsFixturePages(self, opts):
         with open('historyDate.json') as f:
-            print(f)
             d = json.load(f)
         START_DATE = datetime.strptime(d['date'], "%Y-%m-%d")
         getDate = datetime.strptime(d['date'], "%Y-%m-%d")
