@@ -7,7 +7,7 @@ from secret import API_URL, HEADERS, SPORTS_BASE_URL, ESPORTS_BASE_URL, \
 from helpers import importModuleByPath, chunks
 from selenium.webdriver.common.action_chains import ActionChains
 import requests
-import unidecode, re
+import unidecode, re, json
 import random
 
 
@@ -89,6 +89,34 @@ class ScraperBot(masterBot.Bot):
             },
             "tipResults": {
                 "compilePageList": self.tipResults,
+            },
+            "historicFixtures": {
+                "compilePageList": self.getHistoricSportsFixturePages,
+                "opts": {
+                    "sportsList":  [
+                                    'tennis',
+                                    'football',
+                                'basketball',
+                                'baseball',
+                                'ice-hockey',
+                                'volleyball',
+                                'handball',
+                                'rugby',
+                                'american-football',
+                                'table-tennis',
+                                'darts',
+                                'cricket',
+                                'snooker',
+                                'futsal',
+                                'badminton',
+                                'aussie-rules',
+                                'beach-volleyball',
+                                'waterpolo',
+                                'floorball',
+                                'bandy'
+                                ],
+
+                }
             }
         }
         
@@ -198,11 +226,6 @@ class ScraperBot(masterBot.Bot):
         self.sendTaskUpdate("tipResults", {"task":"tipResults", "stage":"Complete"})
 
     def getSportsFixturePages(self, opts):
-        
-        if ('tennis' in opts['sportsList']):
-            self.sendTaskUpdate("tennisFixtures", {"task":"tennisFixtures", "stage":"In Progress"})
-        else:
-            self.sendTaskUpdate("sportsFixtures", {"task":"sportsFixtures", "stage":"In Progress"})
         START_DATE = datetime.now()
         for sportName in opts['sportsList']:
             getDate = datetime.now()
@@ -297,6 +320,106 @@ class ScraperBot(masterBot.Bot):
             self.sendTaskUpdate("tennisFixtures", {"task":"tennisFixtures", "stage":"Complete"})
         else:
             self.sendTaskUpdate("sportsFixtures", {"task":"sportsFixtures", "stage":"Complete"})
+    
+    def getHistoricSportsFixturePages(self, opts):
+        with open('historyDate.json') as f:
+            d = json.load(f)
+        START_DATE = d['date']
+        getDate = datetime.now()
+        if START_DATE > datetime.strptime("2022-08-07", "%Y-%m-%d"):
+            return
+        while getDate < START_DATE + timedelta(5):
+            getDateText = getDate.strftime("%Y-%m-%d")
+            print(getDateText)
+            for sportName in opts['sportsList']:    
+                url = f"{SPORTS_BASE_URL}/{sportName}/{getDateText}"
+                self.changeIP(driverKey="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9050"})
+                print(url)
+                while True:
+                    try:
+                        self.drivers["proxyDriver"].get(url)
+                        break
+                    except selenium.common.exceptions.WebDriverException:
+                        sleep(1)
+                sleep(5)
+                button = False
+                try:
+                    showMore = self.drivers['proxyDriver'].find_element(self.By.XPATH, '//button[text()="Show all matches"]')
+                    print('showMore')
+                    print(showMore)
+                    if showMore is not None:
+                        button = True
+                    else:
+                        sleep(2)
+                        showMore = self.drivers['proxyDriver'].find_element(self.By.XPATH, '//button[text()="Show all matches"]')
+                        if showMore is not None:
+                            print('showMore')
+                            print(showMore)
+                            button = True
+                    sleep(2)
+                except selenium.common.exceptions.NoSuchElementException:
+                    pass
+                sleep(1)
+                while True:
+                    try:
+                        while True:
+                            try:
+                                self.drivers['proxyDriver'].get(f'https://api.sofascore.com/api/v1/sport/{sportName}/scheduled-events/{getDateText}')
+                                games = self.drivers['proxyDriver'].find_element(self.By.TAG_NAME, 'body').text
+                                print(games)
+                                games = json.loads(games)
+                                games = games['events']
+                                break
+                            except selenium.common.exceptions.WebDriverException:
+                                sleep(1)
+                                self.drivers['proxyDriver'].quit()
+                                self.loadChromedriver(key="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9050"})
+                            except selenium.common.exceptions.NoSuchWindowException:
+                                sleep(1)
+                                self.drivers['proxyDriver'].quit()
+                                self.loadChromedriver(key="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9050"})
+                            except selenium.common.exceptions.TimeoutException:
+                                sleep(1)
+                                self.drivers['proxyDriver'].quit()
+                                self.loadChromedriver(key="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9050"})
+                        if button:
+                            sleep(2)
+                            try:
+                                self.drivers['proxyDriver'].get(f'https://api.sofascore.com/api/v1/sport/{sportName}/scheduled-events/{getDateText}/inverse')
+                            except selenium.common.exceptions.WebDriverException:
+                                self.drivers['proxyDriver'].quit()
+                                self.loadChromedriver(key='proxyDriver', opts={'proxy': "socks5://127.0.0.1:9050"})
+                                self.drives['proxyDriver'].get(f'https://api.sofascore.com/api/v1/sport/{sportName}/scheduled-events/{getDateText}/inverse')
+                            except selenium.common.exceptions.NoSuchWindowException:
+                                self.drivers['proxyDriver'].quit()
+                                self.loadChromedriver(key='proxyDriver', opts={'proxy': "socks5://127.0.0.1:9050"})
+                                self.drivers['proxyDriver'].get(f'https://api.sofascore.com/api/v1/sport/{sportName}/scheduled-events/{getDateText}/inverse')
+                            except selenium.common.exceptions.TimeoutException:
+                                self.drivers['proxyDriver'].quit()
+                                self.loadChromedriver(key='proxyDriver', opts={'proxy': "socks5://127.0.0.1:9050"})
+                                self.drivers['proxyDriver'].get(f'https://api.sofascore.com/api/v1/sport/{sportName}/scheduled-events/{getDateText}/inverse')
+                            gamesToAdd = self.drivers['proxyDriver'].find_element(self.By.TAG_NAME, 'body').text
+                            #print(gamesToAdd)
+                            gamesToAdd = json.loads(gamesToAdd)
+                            games = games + gamesToAdd['events']
+                        data = {
+                            'task': 'sportsFixtures',
+                            'data': json.dumps(games)
+                        }
+                        self.sendToParser(data)
+                        break
+                    except json.decoder.JSONDecodeError:
+                        if SERVER in games:
+                            raise ValueError('tor not working')
+                        print('changing IP')
+                        self.changeIP(driverKey="proxyDriver", opts={"proxy": "socks5://127.0.0.1:9050"})
+                        sleep(1)  
+                getDate = getDate + timedelta(1)
+        d['date'] = getDate.strftime("%Y-%m-%d")
+        with open('historyDate.json', 'w') as outfile:
+            outfile.write(d)
+        
+
         
     def getESportsFixturePages(self, opts):
         self.sendTaskUpdate("eSportsFixtures", {"task":"eSportsFixtures", "stage":"In Progress"})
@@ -1067,6 +1190,7 @@ class ScraperBot(masterBot.Bot):
                                     eventDate: {int(matchDate.timestamp())},
                                     platform: "scorebing",
                                     region: "{region}",
+                                    eventType: "{eventType}",
                                     competition: "{competition}",
                                     competitionURL: "{competitionURL}",
                                     competitionID: "{competitionID}"
