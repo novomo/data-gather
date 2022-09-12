@@ -325,7 +325,7 @@ class ScraperBot(masterBot.Bot):
         with open('historyDate.json') as f:
             d = json.load(f)
         START_DATE = datetime.strptime(d['date'], "%Y-%m-%d")
-        getDate = datetime.now()
+        getDate = datetime.strptime(d['date'], "%Y-%m-%d")
         if START_DATE > datetime.strptime("2022-08-07", "%Y-%m-%d"):
             return
         while getDate < START_DATE + timedelta(5):
@@ -417,7 +417,7 @@ class ScraperBot(masterBot.Bot):
                 getDate = getDate + timedelta(1)
         d['date'] = getDate.strftime("%Y-%m-%d")
         with open('historyDate.json', 'w') as outfile:
-            outfile.write(d)
+            outfile.write(json.dumps(d))
         
 
         
