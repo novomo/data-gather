@@ -68,19 +68,20 @@ def main():
     sleep(2)
     try:
         while True:
-            try:
-                BOT.getScraperingTasks()
-                print(BOT.tasks)         
-                for task in BOT.tasks:
-                    if task['stage'] == "New":
-                        if 'opts' in BOT.config[task['task']]:
-                            opts = BOT.config[task['task']]["opts"]
-                        else:
-                            opts = {}
-                        print(task)
-                        BOT.config[task['task']]["compilePageList"](opts)
-                # add back after history finished sleep(900)
-                BOT.config["historicFixtures"]["compilePageList"](BOT.config["historicFixtures"]["opts"])
+            #try:
+            BOT.getScraperingTasks()
+            print(BOT.tasks)         
+            for task in BOT.tasks:
+                if task['stage'] == "New":
+                    if 'opts' in BOT.config[task['task']]:
+                        opts = BOT.config[task['task']]["opts"]
+                    else:
+                        opts = {}
+                    print(task)
+                    BOT.config[task['task']]["compilePageList"](opts)
+            # add back after history finished sleep(900)
+            BOT.config["historicFixtures"]["compilePageList"](BOT.config["historicFixtures"]["opts"])
+            '''
             except ValueError:
                 BOT.quit()
                 BOT = None
@@ -98,7 +99,7 @@ def main():
                 BOT.loadChromedriver(key='standard')
                 print(2)
                 BOT.loadChromedriver(key='proxyDriver', opts={'proxy': "socks5://127.0.0.1:9050"})
-                sleep(2)
+                sleep(2)'''
 
     except:
         traceback.print_exc()
