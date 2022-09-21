@@ -80,8 +80,8 @@ def main():
                         print(task)
                         BOT.config[task['task']]["compilePageList"](opts)
                 # add back after history finished sleep(900)
-                BOT.config["historicFixtures"]["compilePageList"](BOT.config["historicFixtures"]["opts"])
-
+                #BOT.config["historicFixtures"]["compilePageList"](BOT.config["historicFixtures"]["opts"])
+                sleep(900)
             except ValueError:
                 BOT.quit()
                 BOT = None

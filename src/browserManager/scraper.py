@@ -117,6 +117,9 @@ class ScraperBot(masterBot.Bot):
                                 ],
 
                 }
+            },
+            "matchEvents": {
+                "compilePageList": self.getMatchEvents,
             }
         }
         
@@ -1276,3 +1279,12 @@ class ScraperBot(masterBot.Bot):
                 }
             self.sendToParser(data)
         self.sendTaskUpdate("tennisRankings", {"task":"tennisRankings", "stage":"Complete"})
+
+    def getMatchEvents(self, opts):
+        with open(f'{DIRECTORY}/historyEventsDate.json') as f:
+            d = json.load(f)
+        getDate = datetime.strptime(d['date'], "%Y-%m-%d")
+        
+        while getDate < datetime.now():
+            getDateText = getDate.strftime("%Y-%m-%d")
+            print(getDateText)

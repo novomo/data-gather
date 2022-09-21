@@ -199,6 +199,7 @@ module.exports.parseSportsData = async (sportsData) => {
     try {
       result = await fetch(API_URL, opts);
     } catch (err) {
+      console.log('pull back')
       await sleep(10000);
       result = await fetch(API_URL, opts);
     }
