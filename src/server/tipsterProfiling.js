@@ -46,7 +46,7 @@ const blogabet = async (dashboardString, statisticsString, link) => {
   for (const c in categoryData) {
     categoryText =
       categoryText +
-      `{ name: "${categoryData[c]["name"].replace(' - ', '-')}", winRatio: ${
+      `{ name: "${categoryData[c]["name"].replace(" - ", "-")}", winRatio: ${
         categoryData[c]["win_ratio"] / 100
       }, yield: ${categoryData[c]["yield"]}, tipNum: ${
         categoryData[c]["tipNum"]
@@ -76,7 +76,7 @@ const blogabet = async (dashboardString, statisticsString, link) => {
 	platform: "Blogabet", 
 	handle: "${stats.handle}", 
 	profilePic: "${stats["profilePic"]}",
-	status: "${status}",
+	tipsterType: "Tipster",
 	 stakingFactor: 
 			${stats["flatStaking"]}, sportsRatio: ${sportsText}, categoryRatio: ${categoryText} } ) }`;
   console.log(query);
